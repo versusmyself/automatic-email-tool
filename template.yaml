@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Automatic Email Tool
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 10
+    MemorySize: 256
+    Architectures:
+      - x86_64
+
+Resources:
+  AutomaticEmailToolFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: email-tool/
+      Handler: app.lambdaHandler
+      Environment:
+        Variables:
+          GMAIL_USER: notwillhenry@gmail.com
+          GMAIL_APP_PASSWORD: hacqrlrhmisynehm 
+      Events:
+        EmailPost:
+          Type: Api
+          Properties:
+            Path: /email
+            Method: POST
+
+
+Outputs:
+  AutomaticEmailToolApi:
+    Description: API Gateway URL for /email
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/email"
+  AutomaticEmailToolFunctionArn:
+    Description: Lambda ARN
+    Value: !GetAtt AutomaticEmailToolFunction.Arn

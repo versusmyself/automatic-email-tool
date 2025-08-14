@@ -1,0 +1,9 @@
+{
+  "name": "automatic-email-tool-fn",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "app.mjs",
+  "dependencies": {
+    "nodemailer": "^6.9.13"
+  }
+}
