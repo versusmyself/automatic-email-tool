@@ -4,7 +4,7 @@ A simple way to send emails right now or schedule them for later.
 
 It runs entirely on AWS. When you hit the API, you can either send the email instantly or tell it exactly when to go out. AWS stores and delivers through SES.
 
-Why it’s useful:
+Its usefulness stems from:
 
 - Works 24/7 without you running anything
 
