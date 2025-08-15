@@ -1,4 +1,4 @@
-Automatic Email Tool
+# Automatic Email Tool
 
 A simple way to send emails right now or schedule them for later.
 
