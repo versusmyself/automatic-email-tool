@@ -14,12 +14,12 @@ Why it’s useful:
 
 Example funcitons:
 
-# Send now
+## Send now
 curl -X POST "https://<api-id>.execute-api.us-east-1.amazonaws.com/Prod/email" \
   -H "Content-Type: application/json" \
   -d '{"to":["me@example.com"],"subject":"Hello","text":"Test"}'
 
-# Schedule for later
+## Schedule for later
 curl -X POST "https://<api-id>.execute-api.us-east-1.amazonaws.com/Prod/schedule" \
   -H "Content-Type: application/json" \
   -d '{"sendAt":"2025-08-15T16:00:00-04:00","to":["me@example.com"],"subject":"Reminder","text":"This will send later"}'
