@@ -6,11 +6,11 @@ It runs entirely on AWS. When you hit the API, you can either send the email ins
 
 Why it’s useful:
 
-Works 24/7 without you running anything
+- Works 24/7 without you running anything
 
-Handles both plain text and HTML
+- Handles both plain text and HTML
 
-Requires virtually no resources to keep live
+- Requires virtually no resources to keep live
 
 Example funcitons:
 
