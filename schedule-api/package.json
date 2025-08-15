@@ -8,8 +8,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@aws-sdk/client-scheduler": "^3.864.0"
-  }
+  },
+  "description": ""
 }

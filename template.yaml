@@ -7,19 +7,20 @@ Globals:
     Runtime: nodejs20.x
     Timeout: 10
     MemorySize: 256
-    Architectures:
-      - x86_64
+    Architectures: [x86_64]
 
 Resources:
   AutomaticEmailToolFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: email-tool/
-      Handler: app.lambdaHandler
+      Handler: app.handler         # <-- matches your app.mjs export
       Environment:
         Variables:
           GMAIL_USER: notwillhenry@gmail.com
-          GMAIL_APP_PASSWORD: hacqrlrhmisynehm 
+          GMAIL_APP_PASSWORD: hacqrlrhmisynehm
+      Policies:
+        - AWSLambdaBasicExecutionRole
       Events:
         EmailPost:
           Type: Api
@@ -27,11 +28,61 @@ Resources:
             Path: /email
             Method: POST
 
+  # Role that EventBridge Scheduler assumes to invoke your email Lambda
+  SchedulerInvokeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: scheduler.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: allow-lambda-invoke
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource: !GetAtt AutomaticEmailToolFunction.Arn
+
+  # API that creates a one-time schedule to invoke the email Lambda
+  ScheduleApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: schedule-api/
+      Handler: app.handler
+      Environment:
+        Variables:
+          EMAIL_FUNCTION_ARN: !GetAtt AutomaticEmailToolFunction.Arn
+          SCHEDULER_INVOKE_ROLE: !GetAtt SchedulerInvokeRole.Arn
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+            Effect: Allow
+            Action:
+              - scheduler:CreateSchedule
+              - scheduler:GetSchedule
+              - scheduler:DeleteSchedule
+              - scheduler:ListSchedules
+            Resource: "*"
+        - Statement:
+            Effect: Allow
+            Action: iam:PassRole
+            Resource: !GetAtt SchedulerInvokeRole.Arn
+      Events:
+        SchedulePost:
+          Type: Api
+          Properties:
+            Path: /schedule
+            Method: POST
 
 Outputs:
   AutomaticEmailToolApi:
-    Description: API Gateway URL for /email
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/email"
+    Description: API Gateway URL (Prod)
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
   AutomaticEmailToolFunctionArn:
-    Description: Lambda ARN
+    Description: Email Lambda ARN
     Value: !GetAtt AutomaticEmailToolFunction.Arn

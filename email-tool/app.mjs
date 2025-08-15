@@ -24,7 +24,7 @@ const cors = {
 const badReq = (msg) => ({ statusCode: 400, headers: cors, body: JSON.stringify({ ok: false, error: msg }) });
 const serverErr = (msg) => ({ statusCode: 502, headers: cors, body: JSON.stringify({ ok: false, error: msg }) });
 
-export const lambdaHandler = async (event) => {
+export const handler = async (event) => {
   // Preflight for browsers
   if ((event.httpMethod || '').toUpperCase() === 'OPTIONS') {
     return { statusCode: 204, headers: cors };
